@@ -1,53 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#fff">
+    android:layout_height="wrap_content"
+    android:background="@android:color/transparent">
 
 
     <ImageView
         android:id="@+id/onboardingIconImageView"
-        android:layout_width="240dp"
-        android:layout_height="240dp"
+        android:layout_width="233dp"
+        android:layout_height="233dp"
         android:layout_centerHorizontal="true"
-        android:background="@drawable/ic_music_note_black_24dp"
-        app:layout_constraintBottom_toTopOf="@+id/onboardingHeaderTextView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        android:layout_alignParentTop="true"
+        android:paddingTop="20dp"
+        />
 
     <TextView
         android:id="@+id/onboardingHeaderTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
-        android:text="hello world"
-        android:textColor="@color/intro_title"
-        android:textSize="32sp"
-        app:layout_constraintBottom_toTopOf="@+id/onboardingDescriptionTextView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        android:textAllCaps="true"/>
+        android:layout_below="@+id/onboardingIconImageView"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:textAllCaps="true"
+        android:textColor="@color/colorAccent"
+        android:textSize="32sp" />
 
     <TextView
         android:id="@+id/onboardingDescriptionTextView"
-        android:layout_width="wrap_content"
+        android:layout_width="563dp"
         android:layout_height="wrap_content"
-        android:paddingLeft="40dp"
-        android:paddingRight="40dp"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:paddingLeft="20dp"
+        android:paddingRight="50dp"
         android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam congue, tortor eleifend ullamcorper tincidunt."
-        android:textColor="#000"
-        android:textSize="14sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textColor="@color/colorAccent"
+        android:layout_below="@+id/onboardingHeaderTextView"
+        android:textSize="14sp" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>

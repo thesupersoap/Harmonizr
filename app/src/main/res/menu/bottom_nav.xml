@@ -10,12 +10,12 @@
 
     <item
         android:id="@+id/Favorites"
-        android:icon="@drawable/ic_favorite_black_24dp"
+        android:icon="@drawable/ic_favorite_primary_24dp"
         android:title="Favorites" />
 
     <item
         android:id="@+id/Search"
-        android:icon="@drawable/ic_search_black_24dp"
+        android:icon="@drawable/ic_search_primary_24dp"
         android:title="Search" />
 
 </menu>

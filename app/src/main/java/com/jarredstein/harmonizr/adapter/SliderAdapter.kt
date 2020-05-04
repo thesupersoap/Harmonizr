@@ -4,10 +4,10 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.viewpager.widget.PagerAdapter
 import com.jarredstein.harmonizr.R
 
@@ -23,16 +23,16 @@ class SliderAdapter(context : Context) : PagerAdapter() {
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")
 
     private val onboardingIcons = arrayOf(
-        R.drawable.ic_music_note_black_24dp,
-        R.drawable.ic_favorite_black_24dp,
-        R.drawable.ic_music_note_black_24dp)
+        R.drawable.ic_music_note_primary_24dp,
+        R.drawable.ic_favorite_primary_24dp,
+        R.drawable.ic_music_note_primary_24dp)
 
     override fun getCount(): Int {
         return onboardingTitles.size
     }
 
     override fun isViewFromObject(view: View, o: Any): Boolean {
-        return view == o as ConstraintLayout
+        return view == o as RelativeLayout
     }
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
@@ -42,6 +42,7 @@ class SliderAdapter(context : Context) : PagerAdapter() {
         val onboardingIconImageView = view.findViewById<ImageView>(R.id.onboardingIconImageView)
         val onboardingHeaderTextView = view.findViewById<TextView>(R.id.onboardingHeaderTextView)
         val onboardingDescriptionTextView = view.findViewById<TextView>(R.id.onboardingDescriptionTextView)
+
         onboardingIconImageView.setImageResource(onboardingIcons[position])
         onboardingHeaderTextView.text = onboardingTitles[position]
         onboardingDescriptionTextView.text = descriptionText[position]
@@ -52,10 +53,11 @@ class SliderAdapter(context : Context) : PagerAdapter() {
     }
 
     override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
-//        super.destroyItem(container, position, `object`)
-        container.removeView(`object` as ConstraintLayout )
+        container.removeView(`object` as RelativeLayout)
 
     }
+
+
 
 
 }

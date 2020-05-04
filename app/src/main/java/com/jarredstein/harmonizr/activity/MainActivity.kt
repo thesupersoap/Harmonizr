@@ -9,9 +9,6 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.jarredstein.harmonizr.R
-import com.jarredstein.harmonizr.util.PREFS_FILENAME
-import com.jarredstein.harmonizr.util.SPOTIFY_ACCESS_TOKEN
-import com.jarredstein.harmonizr.util.USER_LOGGED_IN
 import kaaes.spotify.webapi.android.SpotifyApi
 import kaaes.spotify.webapi.android.SpotifyService
 import kaaes.spotify.webapi.android.models.Album
@@ -29,7 +26,7 @@ class MainActivity : AppCompatActivity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        prefs = this.getSharedPreferences(PREFS_FILENAME, Context.MODE_PRIVATE)
+        prefs = this.getSharedPreferences(resources.getString(R.string.prefs_filename), Context.MODE_PRIVATE)
         val isUserLoggedIn = prefs?.getBoolean("USER_LOGGED_IN",false)
         val accessToken = intent.getStringExtra("SPOTIFY_ACCESS_TOKEN")
         //check session state
@@ -55,8 +52,7 @@ class MainActivity : AppCompatActivity() {
         tokenTextView.text = accessToken
     }
     private fun moveToLoginActivity() {
-        prefs!!.edit().putBoolean(USER_LOGGED_IN,false).apply()
-        prefs!!.edit().putString(SPOTIFY_ACCESS_TOKEN,"").apply()
+        prefs!!.edit().putBoolean(resources.getString(R.string.prefs_user_logged_in),false).apply()
         val intent = Intent(
             this,
             LoginActivity::class.java)

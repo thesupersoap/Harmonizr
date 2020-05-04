@@ -16,7 +16,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.jarredstein.harmonizr.R
-import com.jarredstein.harmonizr.util.*
+
 import com.spotify.sdk.android.authentication.AuthenticationClient
 import com.spotify.sdk.android.authentication.AuthenticationRequest
 import com.spotify.sdk.android.authentication.AuthenticationResponse
@@ -39,7 +39,7 @@ class LoginActivity : AppCompatActivity()  {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-        prefs = this.getSharedPreferences(PREFS_FILENAME, Context.MODE_PRIVATE)
+        prefs = this.getSharedPreferences(resources.getString(R.string.prefs_filename), Context.MODE_PRIVATE)
 
         animateBg()
 
@@ -84,7 +84,7 @@ class LoginActivity : AppCompatActivity()  {
 
     }
 
-    private fun moveToOnboardingActivity(response: AuthenticationResponse) {
+    private fun moveToOnboardingActivity() {
         prefs!!.edit().putBoolean("USER_LOGGED_IN",true).apply()
         val intent = Intent(
             this,
@@ -109,7 +109,7 @@ class LoginActivity : AppCompatActivity()  {
     private fun isSpotifyInstalledOnDevice(): Boolean {
         var result: Boolean
         try{
-            packageManager.getPackageInfo(SPOTIFY_PACKAGE_NAME, 0);
+            packageManager.getPackageInfo(resources.getString(R.string.spotify_package_name), 0);
             result = true
         } catch(e : Exception){
             result = false
@@ -147,7 +147,7 @@ class LoginActivity : AppCompatActivity()  {
                 AuthenticationClient.getResponse(resultCode, intent)
             when (response.type) {
                 AuthenticationResponse.Type.TOKEN -> {
-                    successRedirect(response)
+                    successRedirect()
                 }
                 AuthenticationResponse.Type.ERROR -> {
                 }
@@ -157,11 +157,11 @@ class LoginActivity : AppCompatActivity()  {
         }
     }
 
-    private fun successRedirect(response: AuthenticationResponse) {
+    private fun successRedirect() {
 
-        when(prefs?.getBoolean(ONBOARD_COMPLETED,false)) {
+        when(prefs?.getBoolean(resources.getString(R.string.prefs_onboarding_completed),false)) {
            true -> moveToProfileActivity()
-            else -> moveToOnboardingActivity(response)
+            else -> moveToOnboardingActivity()
         }
     }
 
