@@ -3,4 +3,12 @@
     <color name="colorPrimary">#1DB954</color>
     <color name="colorPrimaryDark">#191414</color>
     <color name="colorAccent">#03DAC5</color>
+
+    <!--onboarding button  -->
+    <color name="gradient_light_start">#4c84ff</color>
+    <color name="gradient_light_end">#18a3fe</color>
+    <!--onboarding tab colors -->
+    <color name="tab_indicator_gray">#c0c0c0</color>
+    <color name="intro_title">#000000</color>
+    <color name="intro_descr">#656565</color>
 </resources>

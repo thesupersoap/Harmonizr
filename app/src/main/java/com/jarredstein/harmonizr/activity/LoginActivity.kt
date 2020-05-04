@@ -16,10 +16,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.jarredstein.harmonizr.R
-import com.jarredstein.harmonizr.util.PREFS_FILENAME
-import com.jarredstein.harmonizr.util.SPOTIFY_CALLBACK_URL
-import com.jarredstein.harmonizr.util.SPOTIFY_CLIENT_ID
-import com.jarredstein.harmonizr.util.SPOTIFY_PACKAGE_NAME
+import com.jarredstein.harmonizr.util.*
 import com.spotify.sdk.android.authentication.AuthenticationClient
 import com.spotify.sdk.android.authentication.AuthenticationRequest
 import com.spotify.sdk.android.authentication.AuthenticationResponse
@@ -53,41 +50,51 @@ class LoginActivity : AppCompatActivity()  {
         val btn = findViewById<Button>(R.id.loginBtn)
         btn.setOnClickListener {
             Log.d("LoginActivity","button pressed")
-            logInToSpotify()
+            moveToProfileActivity()
         }
 
     }
 
-    private fun logInToSpotify(){
-        val builder = AuthenticationRequest.Builder(
-            SPOTIFY_CLIENT_ID,
-            AuthenticationResponse.Type.TOKEN,
-            SPOTIFY_CALLBACK_URL
-        )
-
-        builder.setScopes(arrayOf("streaming","user-read-private"))
-        val request = builder.build()
-
-        AuthenticationClient.openLoginActivity(
+    private fun doMainActivityRedirect(){
+        val intent = Intent(
             this,
-            REQUEST_CODE,
-            request
-        )
+            MainActivity::class.java)
+        startActivity(intent)
+
+        finish()
+    }
+
+    private fun doOnBoardingRedirect(){
+        val intent = Intent(
+            this,
+            OnboardingActivity::class.java)
+        startActivity(intent)
+
+        finish()
+    }
+
+
+    private fun moveToProfileActivity() {
+        prefs!!.edit().putBoolean("USER_LOGGED_IN",true).apply()
+
+        when(prefs?.getBoolean("USER_COMPLETED_ONBOARDING",false)){
+            true -> doMainActivityRedirect()
+            else -> doOnBoardingRedirect()
+        }
 
     }
 
-    private fun moveToProfileActivity(response: AuthenticationResponse) {
+    private fun moveToOnboardingActivity(response: AuthenticationResponse) {
         prefs!!.edit().putBoolean("USER_LOGGED_IN",true).apply()
         val intent = Intent(
             this,
-            MainActivity::class.java).putExtra("SPOTIFY_ACCESS_TOKEN",response.accessToken)
+            OnboardingActivity::class.java)
 
 
 
         startActivity(intent);
         finish()
     }
-
 
 
     private fun animateBg(){
@@ -140,13 +147,21 @@ class LoginActivity : AppCompatActivity()  {
                 AuthenticationClient.getResponse(resultCode, intent)
             when (response.type) {
                 AuthenticationResponse.Type.TOKEN -> {
-                    moveToProfileActivity(response)
+                    successRedirect(response)
                 }
                 AuthenticationResponse.Type.ERROR -> {
                 }
                 else -> {
                 }
             }
+        }
+    }
+
+    private fun successRedirect(response: AuthenticationResponse) {
+
+        when(prefs?.getBoolean(ONBOARD_COMPLETED,false)) {
+           true -> moveToProfileActivity()
+            else -> moveToOnboardingActivity(response)
         }
     }
 
