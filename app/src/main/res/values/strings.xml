@@ -2,13 +2,19 @@
     <string name="app_name">Harmonizr</string>
 
     <!-- spotify -->
-    <string name="spotify_callback_url">http://com.jarredstein.harmonizr/callback</string>
+    <string name="spotify_callback_url">harmonizr://callback</string>
     <string name="spotify_client_id">e20d881d958c44ab9dd85184133b329b</string>
     <string name="spotify_package_name">com.music.spotify</string>
+    <string name="spotify_request_code">1337</string>
 
     <!-- preferences key strings -->
     <string name="prefs_filename">com.jarredstein.harmonizr.prefs</string>
     <string name="prefs_user_logged_in">USER_LOGGED_IN</string>
     <string name="prefs_spotify_access_token">SPOTIFY_ACCESS_TOKEN</string>
     <string name="prefs_onboarding_completed">ONBOARDING_COMPLETED</string>
+
+    <!-- intent keys -->
+    <string name="INTENT_KEY_SPLASH_ACTIVITY">INTENT_SPLASH_ACTIVITY</string>
+    <string name="INTENT_VAL_SPOTIFY_LOGIN">spotifyLogin</string>
+
 </resources>

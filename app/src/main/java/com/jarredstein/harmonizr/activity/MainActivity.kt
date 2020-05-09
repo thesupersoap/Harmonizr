@@ -29,45 +29,36 @@ class MainActivity : AppCompatActivity() {
         prefs = this.getSharedPreferences(resources.getString(R.string.prefs_filename), Context.MODE_PRIVATE)
         val isUserLoggedIn = prefs?.getBoolean("USER_LOGGED_IN",false)
         val accessToken = intent.getStringExtra("SPOTIFY_ACCESS_TOKEN")
+
         //check session state
-
-
+        /*
         if(true != isUserLoggedIn ){
             Log.i("MainActivity","isUserLoggedIn: ${isUserLoggedIn}  | accessToken: ${accessToken}")
             moveToLoginActivity()
         }
-
-
+*/
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-/*
-        val spotifyApi = SpotifyApi()
-        spotifyApi.setAccessToken(accessToken)
-        val spotify : SpotifyService = spotifyApi.service
-*/
-       setLogOutBtn()
 
+        setLogOutBtn()
 
-        val tokenTextView = findViewById<TextView>(R.id.tokenTextView)
-        tokenTextView.text = accessToken
     }
+
     private fun moveToLoginActivity() {
         prefs!!.edit().putBoolean(resources.getString(R.string.prefs_user_logged_in),false).apply()
-        val intent = Intent(
-            this,
-            LoginActivity::class.java)
 
-        startActivity(intent);
+        startActivity(Intent(
+            this,
+            LoginActivity::class.java))
 
         finish()
     }
 
     private fun setLogOutBtn(){
         val logOutBtn = findViewById<Button>(R.id.logoutButton)
-        logOutBtn.setOnClickListener({
+        logOutBtn.setOnClickListener {
             moveToLoginActivity()
-
-        })
+        }
     }
 
 }

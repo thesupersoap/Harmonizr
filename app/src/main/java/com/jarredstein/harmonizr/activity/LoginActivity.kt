@@ -1,5 +1,6 @@
 package com.jarredstein.harmonizr.activity
 
+import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
@@ -7,7 +8,7 @@ import android.content.SharedPreferences
 import android.graphics.drawable.AnimationDrawable
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
+import android.os.Handler
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
@@ -15,17 +16,25 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat.startActivity
 import com.jarredstein.harmonizr.R
-
 import com.spotify.sdk.android.authentication.AuthenticationClient
 import com.spotify.sdk.android.authentication.AuthenticationRequest
 import com.spotify.sdk.android.authentication.AuthenticationResponse
 import com.spotify.sdk.android.authentication.LoginActivity.REQUEST_CODE
-
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 class LoginActivity : AppCompatActivity()  {
     var prefs: SharedPreferences? = null
+
+    val handler = Handler()
+
+    lateinit var loginBtn : Button
 
     override fun onBackPressed() {
        // super.onBackPressed()
@@ -35,25 +44,84 @@ class LoginActivity : AppCompatActivity()  {
         //Remove title bar
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         //Remove notification bar
-        this.window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
+        this.window.setFlags(
+            WindowManager.LayoutParams.FLAG_FULLSCREEN,
+            WindowManager.LayoutParams.FLAG_FULLSCREEN
+        )
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-        prefs = this.getSharedPreferences(resources.getString(R.string.prefs_filename), Context.MODE_PRIVATE)
+        prefs = this.getSharedPreferences(
+            resources.getString(R.string.prefs_filename),
+            Context.MODE_PRIVATE
+        )
 
         animateBg()
 
-        if(!isSpotifyInstalledOnDevice()){
+
+        if (!isSpotifyInstalledOnDevice()) {
             displayHelpText()
         }
 
-        val btn = findViewById<Button>(R.id.loginBtn)
-        btn.setOnClickListener {
-            Log.d("LoginActivity","button pressed")
-            moveToProfileActivity()
+        loginBtn = findViewById<Button>(R.id.loginBtn)
+        loginBtn.setOnClickListener {
+
+                spotifyLogin()
+
         }
 
     }
+
+
+    private  fun spotifyLogin(){
+
+        val builder = AuthenticationRequest.Builder(
+           "e20d881d958c44ab9dd85184133b329b",
+            AuthenticationResponse.Type.TOKEN,
+            "harmonizr://callback"
+        )
+
+        builder.setScopes(arrayOf("streaming"))
+        val request = builder.build()
+        val contextActivity = this
+        performSpotifyLoginActivity(request,contextActivity)
+
+
+    }
+
+    private  fun performSpotifyLoginActivity(request: AuthenticationRequest, contextActivity : Activity){
+
+            AuthenticationClient.openLoginActivity(
+                contextActivity,
+                REQUEST_CODE,
+                request
+            )
+
+    }
+
+    override fun onActivityResult(
+        requestCode: Int,
+        resultCode: Int,
+        intent: Intent?
+    ) {
+        super.onActivityResult(requestCode, resultCode, intent)
+
+        // Check if result comes from the correct activity
+        if (requestCode == REQUEST_CODE) {
+            val response =
+                AuthenticationClient.getResponse(resultCode, intent)
+            when (response.type) {
+                AuthenticationResponse.Type.TOKEN -> {
+                    startActivity(Intent(this, MainActivity::class.java).putExtra("SPOTIFY_TOKEN",response.accessToken))
+                }
+                AuthenticationResponse.Type.ERROR -> {
+                }
+                else -> {
+                }
+            }
+        }
+    }
+
 
     private fun doMainActivityRedirect(){
         val intent = Intent(
@@ -61,26 +129,26 @@ class LoginActivity : AppCompatActivity()  {
             MainActivity::class.java)
         startActivity(intent)
 
-        finish()
     }
 
     private fun doOnBoardingRedirect(){
         val intent = Intent(
             this,
-            OnboardingActivity::class.java)
+            SplashActivity()::class.java)
         startActivity(intent)
 
-        finish()
+        //finish()
     }
 
 
-    private fun moveToProfileActivity() {
+    private fun leaveLoginActivity() {
         prefs!!.edit().putBoolean("USER_LOGGED_IN",true).apply()
 
-        when(prefs?.getBoolean("USER_COMPLETED_ONBOARDING",false)){
-            true -> doMainActivityRedirect()
-            else -> doOnBoardingRedirect()
-        }
+        startActivity(Intent(this, SplashActivity::class.java)
+            .putExtra(getString(R.string.INTENT_KEY_SPLASH_ACTIVITY),
+                      getString(R.string.INTENT_VAL_SPOTIFY_LOGIN)))
+        //finish()
+
 
     }
 
@@ -88,12 +156,10 @@ class LoginActivity : AppCompatActivity()  {
         prefs!!.edit().putBoolean("USER_LOGGED_IN",true).apply()
         val intent = Intent(
             this,
-            OnboardingActivity::class.java)
-
-
+            SplashActivity()::class.java)
 
         startActivity(intent);
-        finish()
+       // finish()
     }
 
 
@@ -134,35 +200,11 @@ class LoginActivity : AppCompatActivity()  {
 
     }
 
-    override fun onActivityResult(
-        requestCode: Int,
-        resultCode: Int,
-        intent: Intent?
-    ) {
-        super.onActivityResult(requestCode, resultCode, intent)
 
-        // Check if result comes from the correct activity
-        if (requestCode == REQUEST_CODE) {
-            val response =
-                AuthenticationClient.getResponse(resultCode, intent)
-            when (response.type) {
-                AuthenticationResponse.Type.TOKEN -> {
-                    successRedirect()
-                }
-                AuthenticationResponse.Type.ERROR -> {
-                }
-                else -> {
-                }
-            }
-        }
+    private fun logThread(methodName: String){
+        println("debug: ${methodName}: ${Thread.currentThread().name}")
     }
 
-    private fun successRedirect() {
 
-        when(prefs?.getBoolean(resources.getString(R.string.prefs_onboarding_completed),false)) {
-           true -> moveToProfileActivity()
-            else -> moveToOnboardingActivity()
-        }
-    }
 
 }

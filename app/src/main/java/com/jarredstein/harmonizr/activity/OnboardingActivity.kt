@@ -66,8 +66,11 @@ class OnboardingActivity : AppCompatActivity() {
 
         finishedBtn?.visibility = View.GONE
         finishedBtn?.setOnClickListener {
-            val intent = Intent(this,MainActivity::class.java)
-            startActivity(intent)
+
+            prefs?.edit()?.putBoolean(getString(R.string.prefs_onboarding_completed),true)!!.apply()
+            prefs?.edit()?.putBoolean(getString(R.string.prefs_user_logged_in),true)!!.apply()
+
+            startActivity(Intent(this,MainActivity::class.java))
         }
 
         sliderAdapter = SliderAdapter(this)
